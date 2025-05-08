@@ -66,11 +66,9 @@
     <input type="checkbox" id="hideControls" checked> 隱藏控制列
   </label>
 
-  <button onclick="generateIframe()">產生 iframe</button>
-
   <h3>HTML iframe 結果（點擊自動複製）：</h3>
   <textarea id="output" rows="5" readonly onclick="copyCode()"></textarea>
-  <div id="copiedMessage" class="copied-message">已複製到剪貼簿</div>
+  <div id="copiedMessage" class="copied-message">✅ 已複製到剪貼簿</div>
 
   <div id="preview"></div>
 
@@ -90,7 +88,8 @@
       const hideControls = document.getElementById('hideControls').checked;
 
       if (!videoId) {
-        alert('請輸入有效的 Shorts 或 YouTube 影片連結');
+        document.getElementById('output').value = '';
+        document.getElementById('preview').innerHTML = '';
         return;
       }
 
@@ -116,6 +115,11 @@
         setTimeout(() => msg.style.display = 'none', 2000);
       });
     }
+
+    ['shortsUrl', 'width', 'height', 'autoplay', 'noRecommend', 'hideControls'].forEach(id => {
+      document.getElementById(id).addEventListener('input', generateIframe);
+      document.getElementById(id).addEventListener('change', generateIframe);
+    });
   </script>
 </body>
 </html>
