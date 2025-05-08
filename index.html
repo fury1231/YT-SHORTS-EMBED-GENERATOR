@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shorts Embed Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    textarea {
+      width: 100%;
+      margin-top: 10px;
+    }
+    iframe {
+      display: block;
+      margin-top: 20px;
+      border: 1px solid #ddd;
+    }
+    button {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Shorts Embed Generator</h2>
+
+  <label>Shorts 連結：</label>
+  <input type="text" id="shortsUrl" placeholder="https://youtube.com/shorts/影片ID">
+
+  <!-- <label>影片標題（可選）：</label>
+  <input type="text" id="videoTitle" placeholder="自訂標題，例如：這支影片超棒！"> -->
+
+  <label>寬度 (px)：</label>
+  <input type="number" id="width" value="360">
+
+  <label>高度 (px)：</label>
+  <input type="number" id="height" value="640">
+
+  <label>
+    <input type="checkbox" id="autoplay"> 自動播放
+  </label>
+  <label>
+    <input type="checkbox" id="noRecommend" checked> 不顯示推薦影片
+  </label>
+  <label>
+    <input type="checkbox" id="hideControls" checked> 隱藏控制列
+  </label>
+
+  <button onclick="generateIframe()">產生 iframe</button>
+  <button onclick="copyCode()">📋 複製 HTML iframe</button>
+
+  <h3>HTML iframe 結果：</h3>
+  <textarea id="output" rows="5"></textarea>
+
+  <div id="preview"></div>
+
+  <script>
+    function extractVideoId(url) {
+      const shortsMatch = url.match(/(?:shorts\/|watch\?v=)([a-zA-Z0-9_-]{11})/);
+      return shortsMatch ? shortsMatch[1] : null;
+    }
+
+    function generateIframe() {
+      const url = document.getElementById('shortsUrl').value;
+      const videoId = extractVideoId(url);
+      const width = document.getElementById('width').value || 360;
+      const height = document.getElementById('height').value || 640;
+      const autoplay = document.getElementById('autoplay').checked;
+      const noRecommend = document.getElementById('noRecommend').checked;
+      const hideControls = document.getElementById('hideControls').checked;
+
+      if (!videoId) {
+        alert('請輸入有效的 Shorts 或 YouTube 影片連結');
+        return;
+      }
+
+      let src = `https://www.youtube.com/embed/${videoId}`;
+      const params = [];
+      if (autoplay) params.push('autoplay=1');
+      if (noRecommend) params.push('rel=0');
+      if (hideControls) params.push('controls=0');
+      if (params.length) src += '?' + params.join('&');
+
+      const iframeCode = `<iframe width="${width}" height="${height}" src="${src}" frameborder="0" allowfullscreen></iframe>`;
+
+      document.getElementById('output').value = iframeCode;
+      document.getElementById('preview').innerHTML = iframeCode;
+    }
+
+    function copyCode() {
+      const iframeCode = document.getElementById('output').value;
+      navigator.clipboard.writeText(iframeCode).then(() => {
+        alert('已複製 iframe 程式碼');
+      });
+    }
+  </script>
+</body>
+</html>
