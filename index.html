@@ -26,6 +26,7 @@
     textarea {
       width: 100%;
       margin-top: 10px;
+      cursor: pointer;
     }
     iframe {
       display: block;
@@ -35,6 +36,12 @@
     button {
       margin-top: 15px;
     }
+    .copied-message {
+      color: green;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -42,9 +49,6 @@
 
   <label>Shorts 連結：</label>
   <input type="text" id="shortsUrl" placeholder="https://youtube.com/shorts/影片ID">
-
-  <!-- <label>影片標題（可選）：</label>
-  <input type="text" id="videoTitle" placeholder="自訂標題，例如：這支影片超棒！"> -->
 
   <label>寬度 (px)：</label>
   <input type="number" id="width" value="360">
@@ -63,10 +67,10 @@
   </label>
 
   <button onclick="generateIframe()">產生 iframe</button>
-  <button onclick="copyCode()">📋 複製 HTML iframe</button>
 
-  <h3>HTML iframe 結果：</h3>
-  <textarea id="output" rows="5"></textarea>
+  <h3>HTML iframe 結果（點擊自動複製）：</h3>
+  <textarea id="output" rows="5" readonly onclick="copyCode()"></textarea>
+  <div id="copiedMessage" class="copied-message">已複製到剪貼簿</div>
 
   <div id="preview"></div>
 
@@ -101,12 +105,15 @@
 
       document.getElementById('output').value = iframeCode;
       document.getElementById('preview').innerHTML = iframeCode;
+      document.getElementById('copiedMessage').style.display = 'none';
     }
 
     function copyCode() {
       const iframeCode = document.getElementById('output').value;
       navigator.clipboard.writeText(iframeCode).then(() => {
-        alert('已複製 iframe 程式碼');
+        const msg = document.getElementById('copiedMessage');
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 2000);
       });
     }
   </script>
